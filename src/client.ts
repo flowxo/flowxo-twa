@@ -114,6 +114,7 @@ export class FlowXOClient {
 
   protected createHeaders(): Headers {
     const headers = new Headers();
+    headers.append('Content-Type', 'application/json');
     if (this.params.token) {
       headers.append('Authorization', `Bearer ${this.params.token}`);
     }

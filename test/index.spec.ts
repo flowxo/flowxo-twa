@@ -1,13 +1,10 @@
-import { myPackage } from '../src';
+import { FlowXOClient } from '../src';
 
-describe('index', () => {
-  describe('myPackage', () => {
-    it('should return a string containing the message', () => {
-      const message = 'Hello';
-
-      const result = myPackage(message);
-
-      expect(result).toMatch(message);
+describe('client', () => {
+  describe('FxoClient', () => {
+    it('should be able to be instantiated', () => {
+      const client = new FlowXOClient();
+      expect(client).toBeInstanceOf(FlowXOClient);
     });
   });
 });

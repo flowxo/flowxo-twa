@@ -1,12 +1,5 @@
 import { WebApp } from '@twa-dev/types';
 
-export interface FlowXOClientInitParams {
-  webApp?: WebApp;
-  window?: Window;
-  params?: Record<string, string>;
-  baseUrl?: string;
-}
-
 export interface UserProfile {
   id: string;
   name: string;
@@ -43,6 +36,13 @@ export type UserProfileUpdate = Omit<
     replace?: string[];
   };
 };
+
+export interface FlowXOClientInitParams {
+  webApp?: WebApp;
+  window?: Window;
+  params?: Record<string, string>;
+  baseUrl?: string;
+}
 
 export class FlowXOClient {
   readonly params: Record<string, string>;
@@ -83,7 +83,7 @@ export class FlowXOClient {
   async fetchUserProfile(): Promise<UserProfile> {
     const url = this.resourceUrl('telegram/me');
     const headers = this.createHeaders();
-    return fetch(url, { method: 'GET', headers }).then(res => {
+    return fetch(url.href, { method: 'GET', headers }).then(res => {
       return res.json() as Promise<UserProfile>;
     });
   }
@@ -91,7 +91,7 @@ export class FlowXOClient {
   async updateUserProfile(update: UserProfileUpdate): Promise<UserProfile> {
     const url = this.resourceUrl('telegram/me');
     const headers = this.createHeaders();
-    return fetch(url, {
+    return fetch(url.href, {
       method: 'POST',
       headers,
       body: JSON.stringify(update),
@@ -106,7 +106,7 @@ export class FlowXOClient {
   ): Promise<void> {
     const url = this.resourceUrl(`telegram/events/${eventName}`);
     const headers = this.createHeaders();
-    return fetch(url, {
+    return fetch(url.href, {
       method: 'POST',
       headers,
       body: JSON.stringify({ data: eventData }),

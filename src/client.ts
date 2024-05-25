@@ -26,9 +26,8 @@ export interface UserProfile {
   }[];
 }
 
-export type UserProfileUpdate = Omit<
-  UserProfile,
-  'firstMessage' | 'lastMessage' | 'bot' | 'segments'
+export type UserProfileUpdate = Partial<
+  Omit<UserProfile, 'firstMessage' | 'lastMessage' | 'bot' | 'segments'>
 > & {
   segments?: {
     add?: string[];

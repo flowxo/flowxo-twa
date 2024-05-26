@@ -50,7 +50,7 @@ export class FlowXOClient {
   constructor(options: FlowXOClientInitParams = {}) {
     if (!window) {
       throw new Error(
-        'No window could be found in the global context. This library only works in a browser.'
+        'No window could be found in the global context. This library only works in the browser.'
       );
     }
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access

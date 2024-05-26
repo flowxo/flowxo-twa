@@ -26,15 +26,15 @@ export interface UserProfile {
   }[];
 }
 
-export type UserProfileUpdate = Partial<
-  Omit<UserProfile, 'firstMessage' | 'lastMessage' | 'bot' | 'segments'>
-> & {
-  segments?: {
-    add?: string[];
-    remove?: string[];
-    replace?: string[];
-  };
-};
+// export type UserProfileUpdate = Partial<
+//   Omit<UserProfile, 'firstMessage' | 'lastMessage' | 'bot' | 'segments'>
+// > & {
+//   segments?: {
+//     add?: string[];
+//     remove?: string[];
+//     replace?: string[];
+//   };
+// };
 
 export interface FlowXOClientInitParams {
   webApp?: WebApp;
@@ -82,22 +82,34 @@ export class FlowXOClient {
   async fetchUserProfile(): Promise<UserProfile> {
     const url = this.resourceUrl('telegram/me');
     const headers = this.createHeaders();
-    return fetch(url.href, { method: 'GET', headers }).then(res => {
-      return res.json() as Promise<UserProfile>;
-    });
+    return fetch(url.href, { method: 'GET', headers })
+      .then(async res => {
+        if (res.status < 200 || res.status >= 300) {
+          throw new Error(
+            `Failed to fetch user profile: ${
+              res.statusText
+            }:${await res.text()}`
+          );
+        }
+        return res.json() as Promise<UserProfile>;
+      })
+      .catch(ex => {
+        console.error('An error occurred while fetching user profile', ex);
+        return Promise.reject(ex);
+      });
   }
 
-  async updateUserProfile(update: UserProfileUpdate): Promise<UserProfile> {
-    const url = this.resourceUrl('telegram/me');
-    const headers = this.createHeaders();
-    return fetch(url.href, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify(update),
-    }).then(res => {
-      return res.json() as Promise<UserProfile>;
-    });
-  }
+  // async updateUserProfile(update: UserProfileUpdate): Promise<UserProfile> {
+  //   const url = this.resourceUrl('telegram/me');
+  //   const headers = this.createHeaders();
+  //   return fetch(url.href, {
+  //     method: 'POST',
+  //     headers,
+  //     body: JSON.stringify(update),
+  //   }).then(res => {
+  //     return res.json() as Promise<UserProfile>;
+  //   });
+  // }
 
   async event(
     eventName: string,
@@ -109,7 +121,11 @@ export class FlowXOClient {
       method: 'POST',
       headers,
       body: JSON.stringify({ data: eventData }),
-    }).then(() => undefined);
+    })
+      .then(() => undefined)
+      .catch(ex => {
+        console.error(`An error occurred while sending event ${eventName}`, ex);
+      });
   }
 
   protected createHeaders(): Headers {

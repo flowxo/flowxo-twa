@@ -1,6 +1,6 @@
 {
   "name": "@flowxo/twa",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Flow XO client for Telegram Web Apps",
   "main": "./lib/index.js",
   "files": [
